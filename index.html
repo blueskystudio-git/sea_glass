@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Zunzibar — Sea Glass Color Exploration</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@400;500;600&family=Outfit:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --midnight-tide: #1B2D3D;
+    --coastal-sand: #F5F0EB;
+    --coral-sunset: #C4654A;
+    --driftwood-rattan: #B8A48A;
+    --charcoal-ink: #2C2C2C;
+    --white: #FFFFFF;
+    --sg1: #8B9A8B;
+    --sg2: #7F9A84;
+    --sg3: #789C80;
+    --sg4: #729D7C;
+    --sg5: #6B9E78;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { background: var(--coastal-sand); font-family: 'Outfit', sans-serif; color: var(--charcoal-ink); min-height: 100vh; }
+  .page-header { background: var(--midnight-tide); padding: 40px 48px 36px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .page-header h1 { font-family: 'Cormorant Garamond', serif; font-weight: 300; font-size: 32px; color: var(--coastal-sand); letter-spacing: 0.02em; }
+  .page-header h1 span { font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; font-size: 14px; font-family: 'DM Sans', sans-serif; display: block; margin-bottom: 6px; color: var(--coral-sunset); }
+  .page-header .date { font-family: 'DM Sans', sans-serif; font-size: 12px; color: rgba(245,240,235,0.5); letter-spacing: 0.05em; }
+  .container { max-width: 1200px; margin: 0 auto; padding: 48px; }
+  .section-label { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: rgba(44,44,44,0.45); margin-bottom: 16px; }
+  .anchor-row { display: flex; gap: 16px; margin-bottom: 56px; }
+  .anchor-swatch { flex: 1; border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .anchor-swatch .color-block { height: 80px; }
+  .anchor-swatch .info { background: var(--white); padding: 14px 16px; }
+  .anchor-swatch .info .name { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 13px; margin-bottom: 2px; }
+  .anchor-swatch .info .role { font-size: 11px; color: rgba(44,44,44,0.5); font-family: 'DM Sans', sans-serif; }
+  .anchor-swatch .info .hex { font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(44,44,44,0.4); margin-top: 4px; }
+  .exploration-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 56px; }
+  .sg-card { border-radius: 14px; overflow: hidden; box-shadow: 0 2px 16px rgba(0,0,0,0.07); transition: transform 0.2s ease, box-shadow 0.2s ease; cursor: default; }
+  .sg-card:hover { transform: translateY(-4px); box-shadow: 0 8px 28px rgba(0,0,0,0.1); }
+  .sg-card .swatch-main { height: 120px; display: flex; align-items: flex-end; padding: 14px; }
+  .sg-card .swatch-main .option-num { font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.7); background: rgba(0,0,0,0.15); padding: 3px 8px; border-radius: 4px; }
+  .sg-card .companion-strip { display: flex; height: 32px; }
+  .sg-card .companion-strip div { flex: 1; }
+  .sg-card .sg-info { background: var(--white); padding: 16px; }
+  .sg-card .sg-info .sg-name { font-family: 'DM Sans', sans-serif; font-weight: 600; font-size: 14px; margin-bottom: 2px; }
+  .sg-card .sg-info .sg-feel { font-family: 'Outfit', sans-serif; font-size: 12px; color: rgba(44,44,44,0.55); line-height: 1.5; margin-bottom: 10px; }
+  .sg-card .sg-info .sg-hex { font-family: 'DM Sans', sans-serif; font-size: 11px; color: rgba(44,44,44,0.4); }
+  .context-section { margin-bottom: 56px; }
+  .context-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; }
+  .context-card { border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .ctx-dark { background: var(--midnight-tide); padding: 28px 20px; display: flex; flex-direction: column; gap: 12px; min-height: 200px; }
+  .ctx-dark .ctx-brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--coastal-sand); letter-spacing: 0.02em; }
+  .ctx-dark .ctx-tagline { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; }
+  .ctx-dark .ctx-divider { height: 2px; border-radius: 1px; width: 40px; }
+  .ctx-dark .ctx-body { font-family: 'Outfit', sans-serif; font-size: 12px; color: rgba(245,240,235,0.6); line-height: 1.6; }
+  .ctx-light { background: var(--coastal-sand); padding: 28px 20px; display: flex; flex-direction: column; gap: 12px; min-height: 200px; }
+  .ctx-light .ctx-brand { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 300; color: var(--midnight-tide); }
+  .ctx-light .ctx-tagline { font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.14em; }
+  .ctx-light .ctx-divider { height: 2px; border-radius: 1px; width: 40px; }
+  .ctx-light .ctx-body { font-family: 'Outfit', sans-serif; font-size: 12px; color: rgba(44,44,44,0.55); line-height: 1.6; }
+  .ctx-cta { display: inline-block; padding: 8px 18px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; margin-top: auto; width: fit-content; background: var(--coral-sunset); color: var(--white); }
+  .full-palette-section { margin-bottom: 56px; }
+  .palette-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 20px; margin-bottom: 20px; }
+  .palette-stack { border-radius: 12px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+  .palette-stack .ps-row { height: 44px; display: flex; align-items: center; padding: 0 14px; }
+  .palette-stack .ps-row .ps-label { font-family: 'DM Sans', sans-serif; font-size: 9px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; opacity: 0.7; }
+  .palette-stack .ps-row.light-text .ps-label { color: var(--coastal-sand); }
+  .palette-stack .ps-row.dark-text .ps-label { color: var(--charcoal-ink); }
+  .palette-stack .ps-option-label { background: var(--white); padding: 10px 14px; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 600; color: rgba(44,44,44,0.6); text-align: center; }
+  .rec-bar { background: var(--white); border-radius: 14px; padding: 32px 36px; box-shadow: 0 2px 16px rgba(0,0,0,0.06); display: flex; gap: 28px; align-items: flex-start; }
+  .rec-bar .rec-swatch { width: 64px; height: 64px; border-radius: 10px; flex-shrink: 0; }
+  .rec-bar .rec-content h3 { font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .rec-bar .rec-content p { font-family: 'Outfit', sans-serif; font-size: 13px; line-height: 1.6; color: rgba(44,44,44,0.65); }
+  .footer-note { text-align: center; padding: 40px 48px; font-family: 'DM Sans', sans-serif; font-size: 10px; color: rgba(44,44,44,0.3); letter-spacing: 0.08em; text-transform: uppercase; }
+</style>
+</head>
+<body>
+<div class="page-header">
+  <h1><span>Zunzibar</span>Sea Glass — Color Exploration</h1>
+  <div class="date">February 2026 · Brand Development</div>
+</div>
+<div class="container">
+  <div class="section-label">Existing Palette — Fixed Colors</div>
+  <div class="anchor-row">
+    <div class="anchor-swatch"><div class="color-block" style="background: var(--midnight-tide);"></div><div class="info"><div class="name">Midnight Tide</div><div class="role">Primary / Dark</div><div class="hex">#1B2D3D</div></div></div>
+    <div class="anchor-swatch"><div class="color-block" style="background: var(--coastal-sand);border:1px solid rgba(0,0,0,0.06);"></div><div class="info"><div class="name">Coastal Sand</div><div class="role">Primary / Light</div><div class="hex">#F5F0EB</div></div></div>
+    <div class="anchor-swatch"><div class="color-block" style="background: var(--coral-sunset);"></div><div class="info"><div class="name">Coral Sunset</div><div class="role">Digital CTA Only</div><div class="hex">#C4654A</div></div></div>
+    <div class="anchor-swatch"><div class="color-block" style="background: var(--driftwood-rattan);"></div><div class="info"><div class="name">Driftwood Rattan</div><div class="role">Warm Neutral</div><div class="hex">#B8A48A</div></div></div>
+    <div class="anchor-swatch"><div class="color-block" style="background: var(--charcoal-ink);"></div><div class="info"><div class="name">Charcoal Ink</div><div class="role">Print / Text</div><div class="hex">#2C2C2C</div></div></div>
+  </div>
+  <div class="section-label">Sea Glass — 5 Options (Muted → Vibrant)</div>
+  <div class="exploration-grid">
+    <div class="sg-card"><div class="swatch-main" style="background: var(--sg1);"><div class="option-num">Option 1</div></div><div class="companion-strip"><div style="background: var(--midnight-tide);"></div><div style="background: var(--coastal-sand);"></div><div style="background: var(--coral-sunset);"></div><div style="background: var(--driftwood-rattan);"></div></div><div class="sg-info"><div class="sg-name">Muted Sage</div><div class="sg-feel">Quiet, neutral — blends into background, very safe</div><div class="sg-hex">#8B9A8B · Previous version</div></div></div>
+    <div class="sg-card"><div class="swatch-main" style="background: var(--sg2);"><div class="option-num">Option 2</div></div><div class="companion-strip"><div style="background: var(--midnight-tide);"></div><div style="background: var(--coastal-sand);"></div><div style="background: var(--coral-sunset);"></div><div style="background: var(--driftwood-rattan);"></div></div><div class="sg-info"><div class="sg-name">Warm Sage</div><div class="sg-feel">Slightly greener, still soft — hints at coastal without committing</div><div class="sg-hex">#7F9A84</div></div></div>
+    <div class="sg-card"><div class="swatch-main" style="background: var(--sg3);"><div class="option-num">Option 3</div></div><div class="companion-strip"><div style="background: var(--midnight-tide);"></div><div style="background: var(--coastal-sand);"></div><div style="background: var(--coral-sunset);"></div><div style="background: var(--driftwood-rattan);"></div></div><div class="sg-info"><div class="sg-name">Middle Ground</div><div class="sg-feel">Balanced muted/vibrant — recognizably green, still sophisticated</div><div class="sg-hex">#789C80</div></div></div>
+    <div class="sg-card"><div class="swatch-main" style="background: var(--sg4);"><div class="option-num">Option 4</div></div><div class="companion-strip"><div style="background: var(--midnight-tide);"></div><div style="background: var(--coastal-sand);"></div><div style="background: var(--coral-sunset);"></div><div style="background: var(--driftwood-rattan);"></div></div><div class="sg-info"><div class="sg-name">Tropical Lean</div><div class="sg-feel">Noticeably botanical, fresh — reads "coastal green" immediately</div><div class="sg-hex">#729D7C</div></div></div>
+    <div class="sg-card"><div class="swatch-main" style="background: var(--sg5);"><div class="option-num">Option 5</div></div><div class="companion-strip"><div style="background: var(--midnight-tide);"></div><div style="background: var(--coastal-sand);"></div><div style="background: var(--coral-sunset);"></div><div style="background: var(--driftwood-rattan);"></div></div><div class="sg-info"><div class="sg-name">Vibrant Botanical</div><div class="sg-feel">Brightest, most saturated — strong identity color, confident</div><div class="sg-hex">#6B9E78 · Current version</div></div></div>
+  </div>
+  <div class="context-section">
+    <div class="section-label">In Context — On Midnight Tide (Dark Background)</div>
+    <div class="context-grid">
+      <div class="context-card"><div class="ctx-dark"><div class="ctx-tagline" style="color: var(--sg1);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg1);"></div><div class="ctx-body">Wherever the tide takes you.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-dark"><div class="ctx-tagline" style="color: var(--sg2);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg2);"></div><div class="ctx-body">Wherever the tide takes you.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-dark"><div class="ctx-tagline" style="color: var(--sg3);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg3);"></div><div class="ctx-body">Wherever the tide takes you.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-dark"><div class="ctx-tagline" style="color: var(--sg4);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg4);"></div><div class="ctx-body">Wherever the tide takes you.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-dark"><div class="ctx-tagline" style="color: var(--sg5);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg5);"></div><div class="ctx-body">Wherever the tide takes you.</div><div class="ctx-cta">Find Your Place</div></div></div>
+    </div>
+  </div>
+  <div class="context-section">
+    <div class="section-label">In Context — On Coastal Sand (Light Background)</div>
+    <div class="context-grid">
+      <div class="context-card"><div class="ctx-light"><div class="ctx-tagline" style="color: var(--sg1);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg1);"></div><div class="ctx-body">Bar-first energy. Chef-credible food. A place that feels like yours.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-light"><div class="ctx-tagline" style="color: var(--sg2);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg2);"></div><div class="ctx-body">Bar-first energy. Chef-credible food. A place that feels like yours.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-light"><div class="ctx-tagline" style="color: var(--sg3);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg3);"></div><div class="ctx-body">Bar-first energy. Chef-credible food. A place that feels like yours.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-light"><div class="ctx-tagline" style="color: var(--sg4);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg4);"></div><div class="ctx-body">Bar-first energy. Chef-credible food. A place that feels like yours.</div><div class="ctx-cta">Find Your Place</div></div></div>
+      <div class="context-card"><div class="ctx-light"><div class="ctx-tagline" style="color: var(--sg5);">Coastal Cuisine + Curated Cocktails</div><div class="ctx-brand">Zunzibar</div><div class="ctx-divider" style="background: var(--sg5);"></div><div class="ctx-body">Bar-first energy. Chef-credible food. A place that feels like yours.</div><div class="ctx-cta">Find Your Place</div></div></div>
+    </div>
+  </div>
+  <div class="full-palette-section">
+    <div class="section-label">Full Palette Stacks — Each Option with All Colors</div>
+    <div class="palette-row">
+      <div class="palette-stack"><div class="ps-option-label">Option 1 · #8B9A8B</div><div class="ps-row light-text" style="background: var(--midnight-tide);"><span class="ps-label">Midnight Tide</span></div><div class="ps-row light-text" style="background: var(--sg1);"><span class="ps-label">Sea Glass</span></div><div class="ps-row dark-text" style="background: var(--driftwood-rattan);"><span class="ps-label">Driftwood Rattan</span></div><div class="ps-row light-text" style="background: var(--coral-sunset);"><span class="ps-label">Coral Sunset</span></div><div class="ps-row dark-text" style="background: var(--coastal-sand);"><span class="ps-label">Coastal Sand</span></div><div class="ps-row light-text" style="background: var(--charcoal-ink);"><span class="ps-label">Charcoal Ink</span></div></div>
+      <div class="palette-stack"><div class="ps-option-label">Option 2 · #7F9A84</div><div class="ps-row light-text" style="background: var(--midnight-tide);"><span class="ps-label">Midnight Tide</span></div><div class="ps-row light-text" style="background: var(--sg2);"><span class="ps-label">Sea Glass</span></div><div class="ps-row dark-text" style="background: var(--driftwood-rattan);"><span class="ps-label">Driftwood Rattan</span></div><div class="ps-row light-text" style="background: var(--coral-sunset);"><span class="ps-label">Coral Sunset</span></div><div class="ps-row dark-text" style="background: var(--coastal-sand);"><span class="ps-label">Coastal Sand</span></div><div class="ps-row light-text" style="background: var(--charcoal-ink);"><span class="ps-label">Charcoal Ink</span></div></div>
+      <div class="palette-stack"><div class="ps-option-label">Option 3 · #789C80</div><div class="ps-row light-text" style="background: var(--midnight-tide);"><span class="ps-label">Midnight Tide</span></div><div class="ps-row light-text" style="background: var(--sg3);"><span class="ps-label">Sea Glass</span></div><div class="ps-row dark-text" style="background: var(--driftwood-rattan);"><span class="ps-label">Driftwood Rattan</span></div><div class="ps-row light-text" style="background: var(--coral-sunset);"><span class="ps-label">Coral Sunset</span></div><div class="ps-row dark-text" style="background: var(--coastal-sand);"><span class="ps-label">Coastal Sand</span></div><div class="ps-row light-text" style="background: var(--charcoal-ink);"><span class="ps-label">Charcoal Ink</span></div></div>
+      <div class="palette-stack"><div class="ps-option-label">Option 4 · #729D7C</div><div class="ps-row light-text" style="background: var(--midnight-tide);"><span class="ps-label">Midnight Tide</span></div><div class="ps-row light-text" style="background: var(--sg4);"><span class="ps-label">Sea Glass</span></div><div class="ps-row dark-text" style="background: var(--driftwood-rattan);"><span class="ps-label">Driftwood Rattan</span></div><div class="ps-row light-text" style="background: var(--coral-sunset);"><span class="ps-label">Coral Sunset</span></div><div class="ps-row dark-text" style="background: var(--coastal-sand);"><span class="ps-label">Coastal Sand</span></div><div class="ps-row light-text" style="background: var(--charcoal-ink);"><span class="ps-label">Charcoal Ink</span></div></div>
+      <div class="palette-stack"><div class="ps-option-label">Option 5 · #6B9E78</div><div class="ps-row light-text" style="background: var(--midnight-tide);"><span class="ps-label">Midnight Tide</span></div><div class="ps-row light-text" style="background: var(--sg5);"><span class="ps-label">Sea Glass</span></div><div class="ps-row dark-text" style="background: var(--driftwood-rattan);"><span class="ps-label">Driftwood Rattan</span></div><div class="ps-row light-text" style="background: var(--coral-sunset);"><span class="ps-label">Coral Sunset</span></div><div class="ps-row dark-text" style="background: var(--coastal-sand);"><span class="ps-label">Coastal Sand</span></div><div class="ps-row light-text" style="background: var(--charcoal-ink);"><span class="ps-label">Charcoal Ink</span></div></div>
+    </div>
+  </div>
+  <div class="section-label">Agency Recommendation</div>
+  <div class="rec-bar">
+    <div class="rec-swatch" style="background: var(--sg3);"></div>
+    <div class="rec-content">
+      <h3>Option 3 — Middle Ground (#789C80) or Option 4 — Tropical Lean (#729D7C)</h3>
+      <p>Options 3 and 4 hit the sweet spot for Zunzibar's "lived-in luxury" positioning. They read as distinctly coastal-botanical without tipping into the "too corporate" territory Eric flagged, or losing presence the way the original muted sage did. Option 3 gives you more versatility as a large-surface color (menus, backgrounds), while Option 4 pops stronger as an accent/illustration color. Consider which role Sea Glass plays most in your system and pick accordingly — or test both against your palm tree illustration for the final call.</p>
+    </div>
+  </div>
+</div>
+<div class="footer-note">Zunzibar · Sea Glass Color Exploration · Blue Sky Studio · February 2026</div>
+</body>
+</html>
